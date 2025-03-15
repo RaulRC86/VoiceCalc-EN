@@ -59,4 +59,11 @@ body{margin: 0;
         background-color: hsl(35, 100%, 75%)
     }
     
+    #voiceStartButton {
+        margin-right: 15px; 
+    }
+    
+    #voiceStopButton {
+        margin-left: 15px; 
+    }
     

@@ -1,11 +1,11 @@
-const display = document.querySelector('#display');
+const display = document.querySelector("#display");
 
 function appendToDisplay(input) {
   display.value += input;
 }
 
 function clearDisplay() {
-  display.value = '';
+  display.value = "";
 }
 
 function calculate() {
@@ -16,44 +16,38 @@ function calculate() {
   }
 }
 
-
 let isRecognizing = false;
 let recognition;
 
-
 function startVoiceRecognition() {
-  if (!('webkitSpeechRecognition' in window)) {
+  if (!("webkitSpeechRecognition" in window)) {
     alert("Your browser does not support speech recognition.");
     return;
   }
 
   recognition = new webkitSpeechRecognition();
-  recognition.continuous = true; 
+  recognition.continuous = true;
   recognition.interimResults = false;
   recognition.lang = "en-US";
 
   recognition.onstart = function () {
     isRecognizing = true;
     display.value = "Listening...";
-    toggleButtons(true); 
+    toggleButtons(true);
   };
 
   recognition.onresult = function (event) {
-    const result = event.results[event.results.length - 1][0].transcript; 
+    const result = event.results[event.results.length - 1][0].transcript;
     const parsedResult = parseSpeechToMath(result);
-    
-  
-    display.value = parsedResult;
 
+    display.value = parsedResult;
 
     try {
       const calcResult = eval(parsedResult);
       if (!isNaN(calcResult)) {
         display.value = calcResult;
       }
-    } catch (err) {
-     
-    }
+    } catch (err) {}
   };
 
   recognition.onerror = function (event) {
@@ -62,16 +56,15 @@ function startVoiceRecognition() {
 
   recognition.onend = function () {
     if (isRecognizing) {
-      recognition.start(); 
+      recognition.start();
     } else {
       display.value = "Recognition stopped";
-      toggleButtons(false); 
+      toggleButtons(false);
     }
   };
 
   recognition.start();
 }
-
 
 function stopVoiceRecognition() {
   if (isRecognizing && recognition) {
@@ -79,7 +72,6 @@ function stopVoiceRecognition() {
     recognition.stop();
   }
 }
-
 
 function parseSpeechToMath(speech) {
   return speech
@@ -89,9 +81,8 @@ function parseSpeechToMath(speech) {
     .replace(/times/g, "*")
     .replace(/divided by/g, "/")
     .replace(/point/g, ".")
-    .replace(/\s/g, ""); 
+    .replace(/\s/g, "");
 }
-
 
 function toggleButtons(isActive) {
   const startButton = document.querySelector("#voiceStartButton");
@@ -100,22 +91,19 @@ function toggleButtons(isActive) {
   stopButton.disabled = !isActive;
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const calculator = document.getElementById("calculator");
-
 
   const voiceStartButton = document.createElement("button");
   voiceStartButton.id = "voiceStartButton";
   voiceStartButton.innerText = "🎤 Start ";
   voiceStartButton.onclick = startVoiceRecognition;
 
-  // Botón para detener
   const voiceStopButton = document.createElement("button");
   voiceStopButton.id = "voiceStopButton";
   voiceStopButton.innerText = "🛑 Stop";
   voiceStopButton.onclick = stopVoiceRecognition;
-  voiceStopButton.disabled = true; // Deshabilitado inicialmente
+  voiceStopButton.disabled = true;
 
   calculator.appendChild(voiceStartButton);
   calculator.appendChild(voiceStopButton);
